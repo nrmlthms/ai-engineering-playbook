@@ -24,6 +24,7 @@ try:
     import strawberry
     from strawberry.fastapi import GraphQLRouter
     from strawberry.types import Info
+
     STRAWBERRY_AVAILABLE = True
 except ImportError:
     STRAWBERRY_AVAILABLE = False

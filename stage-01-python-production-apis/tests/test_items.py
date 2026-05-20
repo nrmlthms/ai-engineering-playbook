@@ -5,13 +5,12 @@ Uses FastAPI's TestClient (sync) and AsyncClient (async) — both work
 without running a real server.
 """
 
-import pytest
-from fastapi.testclient import TestClient
-
 # Import the factory, not the module-level `app`, so each test gets
 # a fresh in-memory store.
-import importlib
 import sys
+
+import pytest
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture()
@@ -22,10 +21,12 @@ def client():
             del sys.modules[mod]
 
     from stage_01.src.app import create_app  # type: ignore[import]
+
     return TestClient(create_app())
 
 
 # ── CRUD happy paths ──────────────────────────────────────────────────────────
+
 
 def test_create_item(client):
     response = client.post("/v1/items/", json={"name": "Widget", "price": 9.99})
@@ -68,6 +69,7 @@ def test_delete_item(client):
 
 # ── Validation ────────────────────────────────────────────────────────────────
 
+
 def test_create_item_negative_price(client):
     response = client.post("/v1/items/", json={"name": "Bad", "price": -1})
     assert response.status_code == 422
@@ -80,6 +82,7 @@ def test_create_item_empty_name(client):
 
 
 # ── Pagination ────────────────────────────────────────────────────────────────
+
 
 def test_pagination(client):
     for i in range(5):
@@ -101,6 +104,7 @@ def test_pagination(client):
 
 
 # ── Health ────────────────────────────────────────────────────────────────────
+
 
 def test_health(client):
     response = client.get("/health")

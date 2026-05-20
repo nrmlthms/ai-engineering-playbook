@@ -9,9 +9,9 @@ Demonstrates:
 """
 
 import base64
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Query, status
 
 from ..errors import ItemNotFound
 from ..schemas import ItemCreate, ItemResponse, ItemUpdate, PaginatedItems
@@ -26,7 +26,7 @@ _next_id: int = 1
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def _encode_cursor(item_id: int) -> str:
@@ -39,9 +39,10 @@ def _decode_cursor(cursor: str) -> int:
 
 # ── Routes ────────────────────────────────────────────────────────────────────
 
+
 @router.get("/", response_model=PaginatedItems)
 async def list_items(
-    cursor: str | None = Query(default=None, description="Pagination cursor from previous response"),
+    cursor: str | None = Query(default=None, description="Cursor from previous response"),
     limit: int = Query(default=20, ge=1, le=100),
 ) -> PaginatedItems:
     """

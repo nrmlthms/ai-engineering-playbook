@@ -26,11 +26,12 @@ PROBLEM_CONTENT_TYPE = "application/problem+json"
 
 # ── RFC 7807 envelope ─────────────────────────────────────────────────────────
 
+
 class ProblemDetail(BaseModel):
-    type: str           # URI identifying the problem type
-    title: str          # Short, human-readable summary (stable per type)
-    status: int         # HTTP status code
-    detail: str | None = None    # Human-readable explanation for this occurrence
+    type: str  # URI identifying the problem type
+    title: str  # Short, human-readable summary (stable per type)
+    status: int  # HTTP status code
+    detail: str | None = None  # Human-readable explanation for this occurrence
     instance: str | None = None  # URI of the specific occurrence (e.g. request path)
     # Extensions: any extra fields are allowed per RFC 7807 §3.2
     extensions: dict | None = None
@@ -61,9 +62,11 @@ def problem_response(
 
 # ── Domain exceptions — no HTTP knowledge ────────────────────────────────────
 
+
 class ItemNotFound(Exception):
     def __init__(self, item_id: int) -> None:
         self.item_id = item_id
+
 
 class InsufficientStock(Exception):
     def __init__(self, item_id: int, requested: int, available: int) -> None:
@@ -71,51 +74,68 @@ class InsufficientStock(Exception):
         self.requested = requested
         self.available = available
 
+
 class WebhookSignatureInvalid(Exception):
     pass
 
+
 class IdempotencyConflict(Exception):
     """Same idempotency key, different request body."""
+
     pass
 
 
 # ── Handlers ──────────────────────────────────────────────────────────────────
 
+
 async def item_not_found_handler(request: Request, exc: ItemNotFound) -> JSONResponse:
     return problem_response(
-        404, "item-not-found", "Item Not Found",
+        404,
+        "item-not-found",
+        "Item Not Found",
         detail=f"Item {exc.item_id} does not exist.",
         instance=str(request.url.path),
     )
 
+
 async def insufficient_stock_handler(request: Request, exc: InsufficientStock) -> JSONResponse:
     return problem_response(
-        409, "insufficient-stock", "Insufficient Stock",
+        409,
+        "insufficient-stock",
+        "Insufficient Stock",
         detail=f"Requested {exc.requested}, only {exc.available} available.",
         instance=str(request.url.path),
         item_id=exc.item_id,
     )
 
+
 async def webhook_signature_handler(request: Request, exc: WebhookSignatureInvalid) -> JSONResponse:
     return problem_response(400, "invalid-signature", "Invalid Webhook Signature")
 
+
 async def idempotency_conflict_handler(request: Request, exc: IdempotencyConflict) -> JSONResponse:
     return problem_response(
-        422, "idempotency-conflict",
+        422,
+        "idempotency-conflict",
         "Idempotency Key Reused With Different Body",
         detail="The same Idempotency-Key was used with a different request body.",
     )
 
+
 async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     return problem_response(
-        422, "validation-error", "Request Validation Failed",
+        422,
+        "validation-error",
+        "Request Validation Failed",
         detail="One or more fields failed validation.",
         instance=str(request.url.path),
         errors=exc.errors(),
     )
 
+
 async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     import structlog
+
     log = structlog.get_logger()
     log.error("unhandled_exception", path=request.url.path, error=str(exc), exc_info=True)
     return problem_response(500, "internal-error", "Internal Server Error")

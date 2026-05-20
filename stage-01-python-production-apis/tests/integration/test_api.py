@@ -7,10 +7,8 @@ correlation_id, timing, idempotency — just like in production.
 """
 
 import pytest
-import httpx
-from httpx import AsyncClient, ASGITransport
-
 from api.main import create_app
+from httpx import ASGITransport, AsyncClient
 
 
 @pytest.fixture()
@@ -28,6 +26,7 @@ async def client(app):
 
 
 # ── Health ────────────────────────────────────────────────────────────────────
+
 
 async def test_health(client):
     r = await client.get("/health")
@@ -52,6 +51,7 @@ async def test_request_id_generated(client):
 
 
 # ── Items CRUD ────────────────────────────────────────────────────────────────
+
 
 async def test_create_and_get_item(client):
     create = await client.post("/v1/items/", json={"name": "Widget", "price": 9.99})
@@ -80,6 +80,7 @@ async def test_validation_error_returns_rfc7807(client):
 
 
 # ── Idempotency ───────────────────────────────────────────────────────────────
+
 
 async def test_idempotent_create(client):
     payload = {"name": "IdempotentWidget", "price": 1.0}

@@ -2,6 +2,11 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.uv]
+# Monorepo coordinator — install deps but never build/install this root project.
+# Each stage is independently importable via its own conftest.py + sys.path.
+package = false
+
 [project]
 name = "ai-engineer-handbook"
 version = "0.1.0"
@@ -53,7 +58,7 @@ dev = [
     "ruff>=0.15.12",
     "mypy>=2.0.0",
     "ipykernel>=7.2.0",
-    "rich>=15.0.0",
+    "rich>=13.6.0",
     "locust>=2.32.0",
 ]
 

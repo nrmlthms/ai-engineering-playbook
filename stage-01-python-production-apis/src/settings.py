@@ -51,7 +51,11 @@ class Settings(BaseSettings):
     def warn_default_secret(cls, v: str) -> str:
         if v == "dev-secret-change-in-prod":
             import warnings
-            warnings.warn("Using default secret_key — override via SECRET_KEY env var", stacklevel=2)
+
+            warnings.warn(
+                "Using default secret_key — override via SECRET_KEY env var",
+                stacklevel=2,
+            )
         return v
 
     model_config = SettingsConfigDict(

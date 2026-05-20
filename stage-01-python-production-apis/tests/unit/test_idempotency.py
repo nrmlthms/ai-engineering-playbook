@@ -1,16 +1,18 @@
 """Unit tests for idempotency key logic."""
 
-import pytest
-from idempotency import _hash_body, _is_expired, CachedResponse
 import time
+
+from idempotency import CachedResponse, _hash_body, _is_expired
 
 
 def test_hash_body_deterministic():
     body = b'{"name": "Widget"}'
     assert _hash_body(body) == _hash_body(body)
 
+
 def test_hash_body_different_bodies():
     assert _hash_body(b"a") != _hash_body(b"b")
+
 
 def test_cached_response_not_expired_immediately():
     entry = CachedResponse(
@@ -21,8 +23,10 @@ def test_cached_response_not_expired_immediately():
     )
     assert not _is_expired(entry)
 
+
 def test_cached_response_expired_after_ttl(monkeypatch):
     from idempotency import _TTL_SECONDS
+
     entry = CachedResponse(
         status_code=200,
         body=b"{}",

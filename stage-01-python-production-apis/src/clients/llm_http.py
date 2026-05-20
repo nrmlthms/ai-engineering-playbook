@@ -42,6 +42,7 @@ log = structlog.get_logger()
 
 # ── Circuit breaker ───────────────────────────────────────────────────────────
 
+
 class CircuitState(Enum):
     CLOSED = "closed"
     OPEN = "open"
@@ -130,7 +131,8 @@ class CircuitBreaker:
         while self._failure_times and self._failure_times[0] < cutoff:
             self._failure_times.popleft()
 
-        if self.state == CircuitState.HALF_OPEN or len(self._failure_times) >= self.failure_threshold:
+        tripped = len(self._failure_times) >= self.failure_threshold
+        if self.state == CircuitState.HALF_OPEN or tripped:
             self.state = CircuitState.OPEN
             self.last_failure_time = now
             self._probe_in_flight = False
@@ -228,6 +230,7 @@ async def _post_with_retry(url: str, payload: dict) -> dict:
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
+
 class LLMHttpClient:
     """
     Typed wrapper around raw HTTP calls to an LLM API.
@@ -245,9 +248,7 @@ class LLMHttpClient:
         }
 
         async with _semaphore:
-            data = await _circuit_breaker(
-                _post_with_retry("/v1/messages", payload)
-            )
+            data = await _circuit_breaker(_post_with_retry("/v1/messages", payload))
 
         return data["content"][0]["text"]
 

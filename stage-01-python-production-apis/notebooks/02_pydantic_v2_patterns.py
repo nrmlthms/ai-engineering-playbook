@@ -1,3 +1,4 @@
+# ruff: noqa: F704, E402
 # %% [markdown]
 # # 02 — Pydantic v2 Patterns
 #
@@ -5,13 +6,14 @@
 # Key new concepts: `model_validator`, `field_validator`, discriminated unions, `TypeAdapter`.
 
 # %%
-from pydantic import BaseModel, Field, field_validator, model_validator, TypeAdapter
 from typing import Annotated, Literal
-from datetime import datetime, timezone, timedelta
+
+from pydantic import BaseModel, Field, TypeAdapter, field_validator, model_validator
 
 # ── 1. field_validator ────────────────────────────────────────────────────────
 # Runs on a single field after its type is coerced.
 # Use @classmethod — the first arg is the class, not an instance.
+
 
 class UserCreate(BaseModel):
     username: str
@@ -30,6 +32,7 @@ class UserCreate(BaseModel):
             raise ValueError("must contain @")
         return v.lower()
 
+
 user = UserCreate(username="  Alice  ", email="Alice@Example.COM", password="secret123")
 print(user)  # username='alice', email='alice@example.com'
 
@@ -37,6 +40,7 @@ print(user)  # username='alice', email='alice@example.com'
 # ── 2. model_validator — cross-field validation ───────────────────────────────
 # model_validator(mode="after") runs after all field validators succeed.
 # `self` is already the validated model instance.
+
 
 class PasswordChange(BaseModel):
     new_password: str = Field(min_length=8)
@@ -47,6 +51,7 @@ class PasswordChange(BaseModel):
         if self.new_password != self.confirm_password:
             raise ValueError("passwords do not match")
         return self
+
 
 try:
     PasswordChange(new_password="securepass", confirm_password="different")
@@ -61,21 +66,25 @@ print("match ✓")
 # Instead of Union[A, B, C] (tries each in order — slow, ambiguous),
 # a discriminated union uses a literal "type" field to select the model instantly.
 
+
 class EmailNotification(BaseModel):
     kind: Literal["email"]
     to: str
     subject: str
     body: str
 
+
 class PushNotification(BaseModel):
     kind: Literal["push"]
     device_token: str
     title: str
 
+
 class SMSNotification(BaseModel):
     kind: Literal["sms"]
     phone: str
     message: str
+
 
 Notification = Annotated[
     EmailNotification | PushNotification | SMSNotification,
@@ -98,7 +107,7 @@ from pydantic import ValidationError
 PositiveInt = TypeAdapter(Annotated[int, Field(gt=0)])
 TagList = TypeAdapter(list[str])
 
-print(PositiveInt.validate_python(42))    # 42
+print(PositiveInt.validate_python(42))  # 42
 try:
     PositiveInt.validate_python(-1)
 except ValidationError as e:
@@ -116,14 +125,17 @@ print(clean)
 
 from pydantic import ConfigDict
 
+
 class ItemResponse(BaseModel):
     id: int
     name: str
     model_config = ConfigDict(from_attributes=True)
 
+
 class FakeOrmItem:  # simulates a SQLAlchemy model
     id = 1
     name = "Widget"
+
 
 item = ItemResponse.model_validate(FakeOrmItem())
 print(item)

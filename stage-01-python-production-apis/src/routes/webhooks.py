@@ -29,6 +29,7 @@ _processed_event_ids: set[str] = set()
 
 # ── Signature verification ────────────────────────────────────────────────────
 
+
 def verify_stripe_signature(
     raw_body: bytes,
     signature_header: str,
@@ -53,9 +54,7 @@ def verify_stripe_signature(
         raise WebhookSignatureInvalid("webhook timestamp outside tolerance window")
 
     signed_payload = f"{timestamp}.".encode() + raw_body
-    expected_sig = hmac.new(
-        secret.encode(), signed_payload, hashlib.sha256
-    ).hexdigest()
+    expected_sig = hmac.new(secret.encode(), signed_payload, hashlib.sha256).hexdigest()
 
     # compare_digest is constant-time — prevents timing attacks
     if not hmac.compare_digest(expected_sig, received_sig):
@@ -63,6 +62,7 @@ def verify_stripe_signature(
 
 
 # ── Event processing (runs in background after 200 is returned) ───────────────
+
 
 async def process_stripe_event(event: dict) -> None:
     event_id: str = event.get("id", "")
@@ -86,6 +86,7 @@ async def process_stripe_event(event: dict) -> None:
 
 
 # ── Endpoint ──────────────────────────────────────────────────────────────────
+
 
 @router.post("/stripe", status_code=200)
 async def stripe_webhook(

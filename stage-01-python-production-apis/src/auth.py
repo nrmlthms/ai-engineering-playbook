@@ -16,7 +16,7 @@ JWT vs mTLS:
 import base64
 import hashlib
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import jwt
 import structlog
@@ -31,9 +31,10 @@ bearer = HTTPBearer()
 
 # ── JWT ───────────────────────────────────────────────────────────────────────
 
+
 def create_jwt(subject: str, extra_claims: dict | None = None) -> str:
     """Create a signed JWT. `subject` is typically a user ID."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     payload = {
         "sub": subject,
         "iat": now,
@@ -86,6 +87,7 @@ async def get_current_user(
 # original verifier when exchanging the code for tokens.
 #
 # OAuth 2.1 mandates PKCE for ALL clients (not just public clients as in 2.0).
+
 
 def generate_pkce_pair() -> tuple[str, str]:
     """

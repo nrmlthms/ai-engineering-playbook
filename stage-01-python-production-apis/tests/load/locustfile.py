@@ -20,6 +20,7 @@ Watch for:
 """
 
 import uuid
+
 from locust import HttpUser, between, task
 
 

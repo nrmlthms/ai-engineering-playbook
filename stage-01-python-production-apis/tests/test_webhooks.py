@@ -28,14 +28,17 @@ def make_stripe_signature(raw_body: bytes, secret: str, timestamp: int | None = 
 def client(monkeypatch):
     # Patch settings so we control the webhook secret
     import sys
+
     for mod in list(sys.modules):
         if "stage_01" in mod:
             del sys.modules[mod]
 
     from stage_01.src import settings as settings_module  # type: ignore[import]
+
     monkeypatch.setattr(settings_module.settings, "stripe_webhook_secret", "test_secret")
 
     from stage_01.src.app import create_app  # type: ignore[import]
+
     return TestClient(create_app())
 
 
@@ -50,6 +53,7 @@ def post_webhook(client, event: dict, secret: str = "test_secret", timestamp: in
 
 
 # ── Signature verification ────────────────────────────────────────────────────
+
 
 def test_valid_webhook(client):
     event = {"id": "evt_001", "type": "payment_intent.succeeded", "data": {"object": {}}}
@@ -89,6 +93,7 @@ def test_missing_signature_header(client):
 
 
 # ── Idempotency ───────────────────────────────────────────────────────────────
+
 
 def test_duplicate_event_processed_once(client, caplog):
     """Same event_id should be silently ignored on second delivery."""

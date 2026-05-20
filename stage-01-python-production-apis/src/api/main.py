@@ -9,11 +9,11 @@ Sub-apps:
   /graphql → GraphQL (optional, requires strawberry-graphql)
 """
 
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
 import structlog
 import structlog.contextvars
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -91,6 +91,7 @@ def create_app() -> FastAPI:
     # Optional GraphQL — only mounted if strawberry is installed
     try:
         from ..routes.graphql import graphql_router
+
         app.include_router(graphql_router, prefix="/graphql")
     except ImportError:
         pass
