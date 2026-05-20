@@ -16,7 +16,9 @@ Content-Type: application/problem+json
 }
 """
 
-from fastapi import Request
+from typing import Any
+
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -34,7 +36,7 @@ class ProblemDetail(BaseModel):
     detail: str | None = None  # Human-readable explanation for this occurrence
     instance: str | None = None  # URI of the specific occurrence (e.g. request path)
     # Extensions: any extra fields are allowed per RFC 7807 §3.2
-    extensions: dict | None = None
+    extensions: dict[str, Any] | None = None
 
 
 def problem_response(
@@ -43,7 +45,7 @@ def problem_response(
     title: str,
     detail: str | None = None,
     instance: str | None = None,
-    **extensions,
+    **extensions: Any,
 ) -> JSONResponse:
     body = ProblemDetail(
         type=f"https://errors.example.com/{type_slug}",
@@ -141,10 +143,10 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
     return problem_response(500, "internal-error", "Internal Server Error")
 
 
-def register_handlers(app) -> None:  # type: ignore[type-arg]
-    app.add_exception_handler(ItemNotFound, item_not_found_handler)
-    app.add_exception_handler(InsufficientStock, insufficient_stock_handler)
-    app.add_exception_handler(WebhookSignatureInvalid, webhook_signature_handler)
-    app.add_exception_handler(IdempotencyConflict, idempotency_conflict_handler)
-    app.add_exception_handler(RequestValidationError, validation_error_handler)
+def register_handlers(app: FastAPI) -> None:
+    app.add_exception_handler(ItemNotFound, item_not_found_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(InsufficientStock, insufficient_stock_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(WebhookSignatureInvalid, webhook_signature_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(IdempotencyConflict, idempotency_conflict_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(RequestValidationError, validation_error_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unhandled_exception_handler)

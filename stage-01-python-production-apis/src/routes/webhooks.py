@@ -11,9 +11,10 @@ Demonstrates:
 import hashlib
 import hmac
 import json
-import logging
 import time
+from typing import Any
 
+import structlog
 from fastapi import APIRouter, BackgroundTasks, Request
 from fastapi.responses import JSONResponse
 
@@ -21,7 +22,7 @@ from ..errors import WebhookSignatureInvalid
 from ..settings import settings
 
 router = APIRouter(prefix="/webhooks", tags=["webhooks"])
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 # In production this would be a DB table. Here it's an in-memory set.
 _processed_event_ids: set[str] = set()
@@ -64,25 +65,25 @@ def verify_stripe_signature(
 # ── Event processing (runs in background after 200 is returned) ───────────────
 
 
-async def process_stripe_event(event: dict) -> None:
+async def process_stripe_event(event: dict[str, Any]) -> None:
     event_id: str = event.get("id", "")
 
     # Idempotency guard — Stripe retries on network failure
     if event_id in _processed_event_ids:
-        logger.info("duplicate stripe event, skipping", event_id=event_id)
+        log.info("stripe_event_duplicate", event_id=event_id)
         return
 
     _processed_event_ids.add(event_id)
 
     match event.get("type"):
         case "payment_intent.succeeded":
-            logger.info("payment succeeded", event_id=event_id)
+            log.info("stripe_payment_succeeded", event_id=event_id)
             # await handle_payment_success(event["data"]["object"])
         case "customer.subscription.deleted":
-            logger.info("subscription cancelled", event_id=event_id)
+            log.info("stripe_subscription_cancelled", event_id=event_id)
             # await handle_subscription_cancelled(event["data"]["object"])
         case _:
-            logger.info("unhandled stripe event type", type=event.get("type"))
+            log.info("stripe_event_unhandled", event_type=event.get("type"))
 
 
 # ── Endpoint ──────────────────────────────────────────────────────────────────

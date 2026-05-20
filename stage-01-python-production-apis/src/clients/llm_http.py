@@ -24,7 +24,9 @@ The circuit breaker is the key learning here:
 import asyncio
 import time
 from collections import deque
+from collections.abc import AsyncGenerator, Coroutine
 from enum import Enum
+from typing import Any
 
 import httpx
 import structlog
@@ -142,7 +144,7 @@ class CircuitBreaker:
                 window_s=self.window_seconds,
             )
 
-    async def __call__(self, coro):  # type: ignore[type-arg]
+    async def __call__(self, coro: Coroutine[Any, Any, Any]) -> Any:
         """Wrap a coroutine with circuit breaker protection."""
         if not self._should_attempt():
             log.warning("circuit_open", state=self.state.value)
@@ -219,13 +221,14 @@ def _is_retryable(exc: BaseException) -> bool:
     retry=retry_if_exception_type(_RETRYABLE),
     reraise=True,
 )
-async def _post_with_retry(url: str, payload: dict) -> dict:
+async def _post_with_retry(url: str, payload: dict[str, Any]) -> dict[str, Any]:
     client = get_http_client()
     response = await client.post(url, json=payload)
     if response.status_code in _RETRYABLE_STATUS:
         response.raise_for_status()  # triggers retry
     response.raise_for_status()
-    return response.json()
+    result: dict[str, Any] = response.json()
+    return result
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
@@ -250,9 +253,11 @@ class LLMHttpClient:
         async with _semaphore:
             data = await _circuit_breaker(_post_with_retry("/v1/messages", payload))
 
-        return data["content"][0]["text"]
+        return str(data["content"][0]["text"])
 
-    async def complete_stream(self, prompt: str, max_tokens: int = 1024):
+    async def complete_stream(
+        self, prompt: str, max_tokens: int = 1024
+    ) -> AsyncGenerator[str, None]:
         """
         Streaming completion — yields text chunks as they arrive.
 

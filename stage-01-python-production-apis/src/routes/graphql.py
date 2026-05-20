@@ -54,24 +54,24 @@ if STRAWBERRY_AVAILABLE:
 
     @strawberry.type
     class Query:
-        @strawberry.field
+        @strawberry.field  # type: ignore[untyped-decorator]
         async def item(self, id: int, info: Info) -> Item | None:
-            store: dict = info.context["item_store"]
+            store: dict[int, Any] = info.context["item_store"]
             raw = store.get(id)
             if raw is None:
                 return None
             return Item(**raw)
 
-        @strawberry.field
+        @strawberry.field  # type: ignore[untyped-decorator]
         async def items(self, info: Info) -> list[Item]:
-            store: dict = info.context["item_store"]
+            store: dict[int, Any] = info.context["item_store"]
             return [Item(**v) for v in store.values()]
 
     @strawberry.type
     class Mutation:
-        @strawberry.mutation
+        @strawberry.mutation  # type: ignore[untyped-decorator]
         async def create_item(self, input: CreateItemInput, info: Info) -> Item:
-            store: dict = info.context["item_store"]
+            store: dict[int, Any] = info.context["item_store"]
             next_id = max(store.keys(), default=0) + 1
             now = datetime.utcnow()
             raw = {
@@ -89,7 +89,7 @@ if STRAWBERRY_AVAILABLE:
     # Import this in-memory store from routes/items.py in a real app
     _item_store: dict[int, Any] = {}
 
-    async def get_context() -> dict:
+    async def get_context() -> dict[str, Any]:
         """
         Called per-request. Returns a dict available as info.context
         in every resolver. Inject DB sessions, current user, etc. here.
@@ -103,8 +103,8 @@ else:
     # Fallback when strawberry isn't installed — avoids ImportError at startup
     from fastapi import APIRouter
 
-    graphql_router = APIRouter()  # type: ignore[assignment]
+    graphql_router = APIRouter()
 
-    @graphql_router.get("/graphql")  # type: ignore[attr-defined]
-    async def graphql_unavailable():
+    @graphql_router.get("/graphql")
+    async def graphql_unavailable() -> dict[str, str]:
         return {"error": "Install strawberry-graphql[fastapi] to enable GraphQL"}

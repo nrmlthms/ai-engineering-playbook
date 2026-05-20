@@ -25,7 +25,7 @@ from dataclasses import dataclass, field
 import structlog
 from fastapi import Request
 from fastapi.responses import JSONResponse, Response
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.types import ASGIApp
 
 from .errors import IdempotencyConflict
@@ -64,7 +64,7 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app)
 
-    async def dispatch(self, request: Request, call_next) -> Response:  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         if request.method not in IDEMPOTENT_METHODS:
             return await call_next(request)
 

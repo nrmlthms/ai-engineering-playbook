@@ -17,6 +17,7 @@ import base64
 import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 import jwt
 import structlog
@@ -32,7 +33,7 @@ bearer = HTTPBearer()
 # ── JWT ───────────────────────────────────────────────────────────────────────
 
 
-def create_jwt(subject: str, extra_claims: dict | None = None) -> str:
+def create_jwt(subject: str, extra_claims: dict[str, Any] | None = None) -> str:
     """Create a signed JWT. `subject` is typically a user ID."""
     now = datetime.now(UTC)
     payload = {
@@ -44,7 +45,7 @@ def create_jwt(subject: str, extra_claims: dict | None = None) -> str:
     return jwt.encode(payload, settings.secret_key, algorithm=settings.jwt_algorithm)
 
 
-def verify_jwt(token: str) -> dict:
+def verify_jwt(token: str) -> dict[str, Any]:
     """
     Decode and verify a JWT. Raises HTTPException on any failure.
 
@@ -69,7 +70,7 @@ def verify_jwt(token: str) -> dict:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer),
-) -> dict:
+) -> dict[str, Any]:
     """
     FastAPI dependency — inject into any route that requires authentication.
 

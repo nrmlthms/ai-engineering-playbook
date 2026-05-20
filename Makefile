@@ -19,7 +19,11 @@ fmt:
 	uv run ruff format .
 
 typecheck:
-	uv run mypy .
+	for stage_src in stage-*/src; do \
+		if find "$$stage_src" -name "*.py" | grep -q .; then \
+			uv run mypy --explicit-package-bases "$$stage_src"; \
+		fi; \
+	done
 
 check: lint typecheck   ## Run all static checks
 

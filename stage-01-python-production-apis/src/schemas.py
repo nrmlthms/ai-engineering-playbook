@@ -128,7 +128,7 @@ WebhookEvent = Annotated[
 # wrapped in a BaseModel (e.g. validating raw JSON from an external source).
 
 TagList = TypeAdapter(list[str])
-PositiveFloat = TypeAdapter(Annotated[float, Field(gt=0)])
+PositiveFloat: TypeAdapter[float] = TypeAdapter(Annotated[float, Field(gt=0)])
 
 # Examples:
 #   TagList.validate_python(["a", "b"])        # ✓

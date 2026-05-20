@@ -10,6 +10,7 @@ Demonstrates:
 
 import base64
 from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import APIRouter, Query, status
 
@@ -21,7 +22,7 @@ router = APIRouter(prefix="/items", tags=["items"])
 
 # ── In-memory store (replace with real DB in production) ─────────────────────
 
-_store: dict[int, dict] = {}
+_store: dict[int, dict[str, Any]] = {}
 _next_id: int = 1
 
 

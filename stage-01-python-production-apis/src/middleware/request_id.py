@@ -11,7 +11,7 @@ grep all logs for a single request across distributed services.
 import uuid
 
 import structlog
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import ASGIApp
@@ -22,7 +22,7 @@ class RequestIdMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.header = header
 
-    async def dispatch(self, request: Request, call_next) -> Response:  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         req_id = request.headers.get(self.header) or str(uuid.uuid4())
 
         # Attach to request.state so handlers can access it
