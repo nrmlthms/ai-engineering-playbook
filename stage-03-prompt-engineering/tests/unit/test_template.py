@@ -3,7 +3,6 @@ PromptTemplate tests — no network.
 """
 
 import pytest
-
 from prompts.template import PromptTemplate
 
 

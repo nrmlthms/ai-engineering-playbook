@@ -3,7 +3,6 @@ FewShotExample and FewShotFormatter tests — no network.
 """
 
 import pytest
-
 from few_shot import FewShotExample, FewShotFormatter
 
 EXAMPLES = [

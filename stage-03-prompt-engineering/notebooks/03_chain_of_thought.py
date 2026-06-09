@@ -34,8 +34,10 @@ from chain_of_thought import (
 
 # %%
 problems = [
-    "A bat and a ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost?",
-    "If it takes 5 machines 5 minutes to make 5 widgets, how long does it take 100 machines to make 100 widgets?",
+    "A bat and a ball cost $1.10. The bat costs $1 more than the ball. "
+    "How much does the ball cost?",
+    "If it takes 5 machines 5 minutes to make 5 widgets, "
+    "how long does it take 100 machines to make 100 widgets?",
     "There are 23 sheep and 10 goats on a farm. How old is the farmer?",
 ]
 
@@ -89,7 +91,8 @@ print(f"Answer:   {answer}")
 # %%
 HARD_PROBLEMS = [
     # Classic trick question — System 1 answer ($0.10) is wrong
-    "A bat and a ball cost $1.10. The bat costs $1.00 more than the ball. How much does the ball cost?",
+    "A bat and a ball cost $1.10. The bat costs $1.00 more than the ball. "
+    "How much does the ball cost?",
     # Multi-step arithmetic
     (
         "A store had 150 apples. They sold 40% on Monday, then received a shipment of 30 more. "

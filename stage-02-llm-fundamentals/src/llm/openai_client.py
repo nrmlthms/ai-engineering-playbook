@@ -39,8 +39,8 @@ from typing import Any, Literal
 
 import openai
 import structlog
-
 from settings import settings
+
 from .sampling import SamplingParams
 from .streaming import (
     CostBreakdown,

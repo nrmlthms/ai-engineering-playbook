@@ -3,7 +3,6 @@ XML extractor tests — no network, no LLM calls.
 """
 
 import pytest
-
 from extractor import assert_tags_present, extract_all_tags, extract_tag, extract_tags
 
 

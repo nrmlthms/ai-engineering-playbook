@@ -108,10 +108,10 @@ for msg in messages:
 # %%
 async def compare_few_shot(text: str, n_examples: int = 3) -> None:
     """Compare zero-shot vs few-shot sentiment classification."""
+    from extractor import extract_tag
     from llm.anthropic_client import AnthropicClient
     from llm.sampling import SamplingParams
     from prompts.examples import SENTIMENT_CLASSIFIER
-    from extractor import extract_tag
 
     client = AnthropicClient()
     system, _ = SENTIMENT_CLASSIFIER.render(text="")  # just get system

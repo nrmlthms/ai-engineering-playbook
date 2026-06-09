@@ -143,7 +143,8 @@ async def extract_invoice(invoice_text: str) -> dict[str, str | None]:
     )
 
     fields = extract_tags(response.content, ["vendor", "date", "amount", "invoice_number"])
-    print(f"Model: {response.model}  |  Cost: ${response.cost.total_usd:.4f}" if response.cost else "")
+    cost_str = f"${response.cost.total_usd:.4f}" if response.cost else "n/a"
+    print(f"Model: {response.model}  |  Cost: {cost_str}")
     print("Raw response:\n", response.content)
     return fields
 

@@ -41,8 +41,8 @@ from typing import Any
 
 import anthropic
 import structlog
-
 from settings import settings
+
 from .sampling import SamplingParams
 from .streaming import (
     CostBreakdown,
