@@ -56,8 +56,8 @@ for k, v in result.items():
 # %%
 # Single tag — returns first match or None
 text = "The capital of France is <answer>Paris</answer>."
-print(extract_tag(text, "answer"))          # "Paris"
-print(extract_tag(text, "missing"))         # None
+print(extract_tag(text, "answer"))  # "Paris"
+print(extract_tag(text, "missing"))  # None
 
 # All tags — list of all matches
 steps = "<step>Load data</step><step>Clean data</step><step>Train model</step>"

@@ -112,8 +112,8 @@ class RAGPipeline:
 
     def __init__(
         self,
-        retriever: Any,     # Retriever from retriever.py
-        client: Any,        # AnthropicClient or OpenAIClient from Stage 02
+        retriever: Any,  # Retriever from retriever.py
+        client: Any,  # AnthropicClient or OpenAIClient from Stage 02
         top_k: int = 5,
     ) -> None:
         self.retriever = retriever

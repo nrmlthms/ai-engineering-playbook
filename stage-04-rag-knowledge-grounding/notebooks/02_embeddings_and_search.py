@@ -24,6 +24,7 @@ from embedder import DeterministicEmbedder
 #   0.0 = orthogonal (unrelated)
 #  -1.0 = opposite direction (antonyms — rare in practice)
 
+
 # %%
 def cosine(a: list[float], b: list[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
@@ -36,7 +37,7 @@ def cosine(a: list[float], b: list[float]) -> float:
 e = DeterministicEmbedder(dimension=128)
 texts = [
     "The quick brown fox jumps over the lazy dog.",
-    "A fast auburn fox leaps above a sleepy hound.",    # paraphrase
+    "A fast auburn fox leaps above a sleepy hound.",  # paraphrase
     "Machine learning is a subset of artificial intelligence.",  # unrelated
 ]
 
@@ -57,6 +58,7 @@ print("Real embeddings would show original≈paraphrase >> original vs unrelated
 
 # %% [markdown]
 # ## 2. SentenceTransformer embeddings (downloads ~90 MB on first use)
+
 
 # %%
 def demo_semantic_similarity() -> None:
@@ -86,6 +88,7 @@ print("(Cell ready — uncomment to run; downloads ~90 MB on first use)")
 
 # %% [markdown]
 # ## 3. Building a vector store and querying it
+
 
 # %%
 def demo_vector_search() -> None:
@@ -139,13 +142,14 @@ print("(Cell ready — uncomment to run)")
 # Quality difference is small for English text. Use local for cost-sensitive
 # applications; OpenAI for multilingual or highest-quality requirements.
 
+
 # %%
 def compare_embedders() -> None:
     from embedder import OpenAIEmbedder, SentenceTransformerEmbedder
 
     test_pairs = [
-        ("Dogs are mammals.", "Cats are mammals."),     # related
-        ("Dogs are mammals.", "The stock market fell."), # unrelated
+        ("Dogs are mammals.", "Cats are mammals."),  # related
+        ("Dogs are mammals.", "The stock market fell."),  # unrelated
     ]
 
     for embedder_cls, label in [

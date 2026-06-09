@@ -44,7 +44,7 @@ def _enc() -> tiktoken.Encoding:
 @dataclass
 class Chunk:
     text: str
-    index: int        # 0-based position within the source document
+    index: int  # 0-based position within the source document
     token_count: int
     doc_id: str = ""
     metadata: dict[str, str] = field(default_factory=dict)

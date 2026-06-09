@@ -35,9 +35,7 @@ class PromptTemplate:
     def variable_names(self) -> frozenset[str]:
         """All named placeholders in user_template (parsed, not regex)."""
         return frozenset(
-            fname
-            for _, fname, _, _ in Formatter().parse(self.user_template)
-            if fname is not None
+            fname for _, fname, _, _ in Formatter().parse(self.user_template) if fname is not None
         )
 
     def render(self, **variables: str) -> tuple[str, str]:
@@ -49,9 +47,7 @@ class PromptTemplate:
         """
         missing = self.variable_names - set(variables)
         if missing:
-            raise ValueError(
-                f"Template '{self.name}' missing variables: {sorted(missing)}"
-            )
+            raise ValueError(f"Template '{self.name}' missing variables: {sorted(missing)}")
         return (self.system, self.user_template.format_map(variables))
 
     def __str__(self) -> str:

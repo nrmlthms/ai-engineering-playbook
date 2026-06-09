@@ -44,6 +44,7 @@ for doc in documents:
 # %% [markdown]
 # ## 2. Build the retriever (downloads model ~90 MB on first run)
 
+
 # %%
 def build_retriever() -> Retriever:
     embedder = SentenceTransformerEmbedder()
@@ -58,6 +59,7 @@ print("(Cell ready — uncomment to build retriever)")
 
 # %% [markdown]
 # ## 3. Ingest documents
+
 
 # %%
 async def ingest_docs() -> RAGPipeline:
@@ -79,6 +81,7 @@ print("(Cell ready — uncomment after implementing build_rag_prompt)")
 
 # %% [markdown]
 # ## 4. Retrieval — inspect what gets retrieved before generation
+
 
 # %%
 def inspect_retrieval(retriever: Retriever, query: str, top_k: int = 5) -> None:

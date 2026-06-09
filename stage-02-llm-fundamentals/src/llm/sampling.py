@@ -101,9 +101,7 @@ class SamplingParams:
                     "remove it or set temperature=1.0."
                 )
             if self.top_p is not None:
-                raise ValueError(
-                    f"o-series models do not support top_p (got {self.top_p})."
-                )
+                raise ValueError(f"o-series models do not support top_p (got {self.top_p}).")
 
         if provider != "anthropic" and self.top_k is not None:
             raise ValueError(f"top_k is Anthropic-only; not supported by {provider!r}.")
@@ -113,8 +111,7 @@ class SamplingParams:
 
         if self.min_p is not None:
             raise ValueError(
-                f"min_p is not supported by {provider!r}. "
-                "Use top_p for nucleus sampling instead."
+                f"min_p is not supported by {provider!r}. Use top_p for nucleus sampling instead."
             )
 
     def to_anthropic_kwargs(self) -> dict[str, Any]:

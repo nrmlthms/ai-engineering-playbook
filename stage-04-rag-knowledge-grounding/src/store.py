@@ -33,9 +33,9 @@ import chromadb
 @dataclass
 class SearchResult:
     text: str
-    score: float            # cosine similarity: 1 = identical, 0 = orthogonal
+    score: float  # cosine similarity: 1 = identical, 0 = orthogonal
     doc_id: str
-    rank: int               # 1-based rank in result list
+    rank: int  # 1-based rank in result list
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
@@ -93,7 +93,7 @@ class VectorStore:
         return [
             SearchResult(
                 text=doc,
-                score=1.0 - dist,   # distance → similarity
+                score=1.0 - dist,  # distance → similarity
                 doc_id=doc_id,
                 rank=i + 1,
                 metadata=meta or {},

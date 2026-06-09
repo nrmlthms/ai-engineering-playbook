@@ -96,7 +96,7 @@ messages = fmt.prepend_to_messages(
     strategy="by_label",
 )
 
-print(f"Total messages: {len(messages)} ({(len(messages)-1)//2} examples + 1 query)\n")
+print(f"Total messages: {len(messages)} ({(len(messages) - 1) // 2} examples + 1 query)\n")
 for msg in messages:
     role = msg["role"].upper()
     content = msg["content"][:70]
@@ -104,6 +104,7 @@ for msg in messages:
 
 # %% [markdown]
 # ## 4. Live comparison: zero-shot vs few-shot (requires ANTHROPIC_API_KEY)
+
 
 # %%
 async def compare_few_shot(text: str, n_examples: int = 3) -> None:

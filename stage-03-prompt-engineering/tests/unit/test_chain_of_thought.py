@@ -33,10 +33,7 @@ def test_extract_cot_answer_both_tags() -> None:
 
 
 def test_extract_cot_answer_multiline_thinking() -> None:
-    text = (
-        "<thinking>\nStep 1: identify operands\nStep 2: add\n</thinking>"
-        "<answer>42</answer>"
-    )
+    text = "<thinking>\nStep 1: identify operands\nStep 2: add\n</thinking><answer>42</answer>"
     thinking, answer = extract_cot_answer(text)
     assert thinking is not None
     assert "Step 1" in thinking

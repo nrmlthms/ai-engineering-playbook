@@ -156,6 +156,7 @@ print("(Cell ready — uncomment to run with a real API key)")
 # Rule of thumb: use scratchpad for most tasks, extended thinking for
 # problems where you'd benefit from a long internal draft.
 
+
 # %%
 async def thinking_vs_scratchpad(problem: str) -> None:
     from llm.anthropic_client import AnthropicClient, ThinkingConfig

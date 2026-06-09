@@ -35,8 +35,8 @@ print(f"Characters: {len(sample_text):,}")
 # ## 2. Compare three chunking strategies
 
 # %%
-CHUNK_SIZE = 256   # tokens
-OVERLAP = 32       # tokens (for sliding window)
+CHUNK_SIZE = 256  # tokens
+OVERLAP = 32  # tokens (for sliding window)
 
 fixed = chunk_by_tokens(sample_text, chunk_size=CHUNK_SIZE)
 sliding = chunk_by_tokens_sliding(sample_text, chunk_size=CHUNK_SIZE, overlap=OVERLAP)
@@ -48,7 +48,7 @@ for label, chunks in [("Fixed", fixed), ("Sliding", sliding), ("Sentence", sente
     sizes = [c.token_count for c in chunks]
     print(
         f"{label:<20} {len(chunks):>8} {min(sizes):>8} {max(sizes):>8} "
-        f"{sum(sizes)/len(sizes):>8.0f}"
+        f"{sum(sizes) / len(sizes):>8.0f}"
     )
 
 # %% [markdown]
